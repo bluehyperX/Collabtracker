@@ -58,8 +58,8 @@ class Commit(models.Model):
     def __str__(self):
         return f"Hash: {self.hash} Authors: {self.authors} Repo: {self.repository}"
 
-# class Changes(models.Model):
-#     file = models.ForeignKey(File, on_delete = models.CASCADE, blank = False)
-#     commit = models.ForeignKey(Commit, on_delete = models.CASCADE, blank = False)
-#     additions = models.IntegerField()
-#     deletions = models.IntegerField()
+class Changes(models.Model):
+    file = models.ForeignKey(File, on_delete = models.CASCADE, blank = False)
+    commit = models.ForeignKey(Commit, on_delete = models.CASCADE, blank = False)
+    additions = models.IntegerField()
+    deletions = models.IntegerField()
