@@ -1,0 +1,20 @@
+Repositories Facts –
+    1.	Aggregated Facts – 
+        a.	Top 3 active repos in 6 months
+        b.	Top 3 least active repos in 6 months
+    2.	Repo-level Facts – 
+        a.	Top 3 most active branches
+        b.	Top 3 active users
+        c.	Top 3 frequently changed files
+        d.	Average commit per day
+        
+User Facts –
+    1.	Aggregated Facts –
+        a.	Top 3 most active users based on commits
+        b.	Top 3 most active users based on consistency
+        c.	Top 3 most productive days
+        d.	Top 3 most collaborator pairs (optional)
+    2.	User Level Facts – 
+        a.	Top 3 most active repo and branch
+        b.	Most productive 4-hour period
+        c.	 Average commit per day
