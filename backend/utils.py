@@ -16,7 +16,8 @@ from repositories.models import Commit, Repository, File, Branch, Changes
 from employees.models import Employee
 
 date = timezone.now()
-os.mkdir('../logs')
+if not os.path.exists('../logs'):
+    os.mkdir('../logs')
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger()
 logger.addHandler(logging.FileHandler(f'../logs/utils_{date}.log', 'a'))
@@ -58,8 +59,8 @@ def get_commits(r, repo):
         print(f"Processing branch: {branch}")
         for commit in repo.iter_commits(branch):
             print(f"Processing commit: {commit.hexsha}")
-            # if Commit.objects.filter(hash=commit.hexsha).exists():
-            #     continue
+            if Commit.objects.filter(hash=commit.hexsha).exists():
+                continue
             commit_info = Commit.objects.create(
                 hash=commit.hexsha, 
                 repository=r, 

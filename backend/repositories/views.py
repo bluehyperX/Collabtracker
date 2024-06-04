@@ -77,7 +77,7 @@ def repo_data(request):
 
     for repo in repositories:
         # Most active branches
-        branches = Commit.objects.filter(repository=repo).values(
+        branches = Commit.objects.filter(repository=repo, created__range=(startDate, endDate)).values(
             'branch__name'
         ).annotate(
             total_commits=Count('hash'),
@@ -86,7 +86,7 @@ def repo_data(request):
         branch_data[repo.name] = list(branches)
         
         # Most active users
-        users = Commit.objects.filter(repository=repo).values(
+        users = Commit.objects.filter(repository=repo, created__range=(startDate, endDate)).values(
             'authors__name'
         ).annotate(
             total_commits=Count('hash'),
@@ -95,7 +95,7 @@ def repo_data(request):
         user_data[repo.name] = list(users)
         
         # Frequently changed files
-        files = Commit.objects.filter(repository=repo).values(
+        files = Commit.objects.filter(repository=repo, created__range=(startDate, endDate)).values(
             'files__name'
         ).annotate(
             total_commits=Count('hash'),
@@ -111,7 +111,7 @@ def repo_data(request):
         total_branches[repo.name] = Branch.objects.filter(repository=repo).count()
         
         # Last active branch
-        last_active_branch[repo.name] = Commit.objects.filter(repository=repo).values(
+        last_active_branch[repo.name] = Commit.objects.filter(repository=repo, created__range=(startDate, endDate)).values(
             'branch__name'
         ).annotate(
             last_commit=Max('created')
@@ -121,29 +121,29 @@ def repo_data(request):
         total_users[repo.name] = Employee.objects.filter(commit__repository=repo).distinct().count()
 
         # Last active user
-        last_active_user[repo.name] = Commit.objects.filter(repository=repo).values(
+        last_active_user[repo.name] = Commit.objects.filter(repository=repo, created__range=(startDate, endDate)).values(
             'authors__name'
         ).annotate(
             last_commit=Max('created')
         ).order_by('-last_commit').first()
 
         # Last commit date and time
-        last_commit_datetime[repo.name] = Commit.objects.filter(repository=repo).aggregate(last_commit=Max('created'))['last_commit']
+        last_commit_datetime[repo.name] = Commit.objects.filter(repository=repo, created__range=(startDate, endDate)).aggregate(last_commit=Max('created'))['last_commit']
 
         # Last changed file
-        last_changed_file[repo.name] = Commit.objects.filter(repository=repo).values(
+        last_changed_file[repo.name] = Commit.objects.filter(repository=repo, created__range=(startDate, endDate)).values(
             'files__name'
         ).annotate(
             last_commit=Max('created')
         ).order_by('-last_commit').first()
 
         # Max number of changed files in a commit
-        max_changed_files_in_commit[repo.name] = Commit.objects.filter(repository=repo).annotate(
+        max_changed_files_in_commit[repo.name] = Commit.objects.filter(repository=repo, created__range=(startDate, endDate)).annotate(
             num_files=Count('files')
         ).aggregate(max_files=Max('num_files'))['max_files']
 
         # Avg number of changed files in a commit
-        avg_changed_files_in_commit[repo.name] = Commit.objects.filter(repository=repo).annotate(
+        avg_changed_files_in_commit[repo.name] = Commit.objects.filter(repository=repo, created__range=(startDate, endDate)).annotate(
             num_files=Count('files')
         ).aggregate(avg_files=Avg('num_files'))['avg_files']
 

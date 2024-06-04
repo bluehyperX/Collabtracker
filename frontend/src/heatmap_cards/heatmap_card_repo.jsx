@@ -20,9 +20,24 @@ const Heatmap_Card_Repo = (props) => {
     const heatmap_info = props.heatmap_data;
     const startDate = props.heatmap_dates.startDate;
     const endDate = props.heatmap_dates.endDate;
-    const most_active_branches_rows = props.branch_data
-    const most_active_users_rows = props.user_data
-    const most_frequently_changed_files_rows = props.file_data
+    const most_active_branches_rows = props.branch_data.map(repo => {
+        return {
+          ...repo,
+          last_commit: convertToIST(repo.last_commit)
+      };
+  });
+    const most_active_users_rows = props.user_data.map(repo => {
+        return {
+          ...repo,
+          last_commit: convertToIST(repo.last_commit)
+      };
+  });
+    const most_frequently_changed_files_rows = props.file_data.map(repo => {
+        return {
+          ...repo,
+          last_commit: convertToIST(repo.last_commit)
+      };
+  });
     const avg_commits = props.average_commits_per_day;
     const total_branches = props.total_branches;
     const last_active_branch = props.last_active_branch;
@@ -57,9 +72,9 @@ const Heatmap_Card_Repo = (props) => {
     ];
 
     // Ensure each row has a unique `id` field for DataGrid
-    most_active_branches_rows.forEach((row, index) => (row.id = index + 1, row.last_commit = convertToIST(row.last_commit)));
-    most_active_users_rows.forEach((row, index) => (row.id = index + 1, row.last_commit = convertToIST(row.last_commit)));
-    most_frequently_changed_files_rows.forEach((row, index) => (row.id = index + 1, row.last_commit = convertToIST(row.last_commit)));
+    most_active_branches_rows.forEach((row, index) => (row.id = index + 1));
+    most_active_users_rows.forEach((row, index) => (row.id = index + 1));
+    most_frequently_changed_files_rows.forEach((row, index) => (row.id = index + 1));
 
     return (
         <div className="card">
@@ -86,33 +101,33 @@ const Heatmap_Card_Repo = (props) => {
                 <AccordionDetails>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
-                            <Typography variant="h7">Total Branches: {total_branches}</Typography>
+                            <Typography variant="h7"><b>Total Branches:</b> {total_branches}</Typography>
                             <br />
-                            <Typography variant="h7">Total Users: {total_users}</Typography>
+                            <Typography variant="h7"><b>Total Users:</b> {total_users}</Typography>
                             <br />
                             <Typography variant="h7">
-                                Last Active Branch: {last_active_branch.branch__name} @ {convertToIST(last_active_branch.last_commit)}
+                                <b>Last Active Branch:</b> {last_active_branch.branch__name} @ {convertToIST(last_active_branch.last_commit)}
                             </Typography>
                             <br />
                             <Typography variant="h7">
-                                Last Active User: {last_active_user.authors__name} @ {convertToIST(last_active_user.last_commit)}
+                            <b>Last Active User:</b> {last_active_user.authors__name} @ {convertToIST(last_active_user.last_commit)}
                             </Typography>
                             <br />
                             <Typography variant="h7">
-                                Last Changed File: {last_changed_files.files__name} @ {convertToIST(last_changed_files.last_commit)}
+                            <b>Last Changed File:</b> {last_changed_files.files__name} @ {convertToIST(last_changed_files.last_commit)}
                             </Typography>
                             <br />
-                            <Typography variant="h7">Average Commits/Day in 30 days: {avg_commits}</Typography>
+                            <Typography variant="h7"><b>Average Commits/Day in 30 days:</b> {avg_commits}</Typography>
                             <br />
-                            <Typography variant="h7">Last Commit: {convertToIST(last_commits)}</Typography>
+                            <Typography variant="h7"><b>Last Commit:</b> {convertToIST(last_commits)}</Typography>
                             <br />
-                            <Typography variant="h7">Max number of changed files in a commit: {max_file_changed}</Typography>
+                            <Typography variant="h7"><b>Max number of changed files in a commit:</b> {max_file_changed}</Typography>
                             <br />
-                            <Typography variant="h7">Avg number of changed files in a commit: {avg_file_changed}</Typography>
+                            <Typography variant="h7"><b>Avg number of changed files in a commit:</b> {avg_file_changed}</Typography>
                             <br />
-                            <Typography variant="h7">Max number of changes in a file: {max_changes_in_file_in_commit}</Typography>
+                            <Typography variant="h7"><b>Max number of changes in a file:</b> {max_changes_in_file_in_commit}</Typography>
                             <br />
-                            <Typography variant="h7">Avg number of changes in a file: {avg_changes_in_file_in_commit}</Typography>
+                            <Typography variant="h7"><b>Avg number of changes in a file:</b> {avg_changes_in_file_in_commit}</Typography>
                             <br />
                         </Grid>
                         <Grid item xs={6}>
