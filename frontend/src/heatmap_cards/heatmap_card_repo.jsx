@@ -20,24 +20,9 @@ const Heatmap_Card_Repo = (props) => {
     const heatmap_info = props.heatmap_data;
     const startDate = props.heatmap_dates.startDate;
     const endDate = props.heatmap_dates.endDate;
-    const most_active_branches_rows = props.branch_data.map(repo => {
-      return {
-        ...repo,
-        last_commit: convertToIST(repo.last_commit)
-    };
-});
-    const most_active_users_rows = props.user_data.map(repo => {
-      return {
-        ...repo,
-        last_commit: convertToIST(repo.last_commit)
-    };
-});
-    const most_frequently_changed_files_rows = props.file_data.map(repo => {
-      return {
-        ...repo,
-        last_commit: convertToIST(repo.last_commit)
-    };
-});
+    const most_active_branches_rows = props.branch_data
+    const most_active_users_rows = props.user_data
+    const most_frequently_changed_files_rows = props.file_data
     const avg_commits = props.average_commits_per_day;
     const total_branches = props.total_branches;
     const last_active_branch = props.last_active_branch;
@@ -47,7 +32,8 @@ const Heatmap_Card_Repo = (props) => {
     const last_changed_files = props.last_changed_files;
     const max_file_changed = props.max_file_changed;
     const avg_file_changed = props.avg_file_changed;
-
+    const max_changes_in_file_in_commit = props.max_changes;
+    const avg_changes_in_file_in_commit = props.avg_changes;
 
     const most_active_branches_columns = [
         { field: 'id', headerName: 'S. No.', width: 70, valueGetter: (value,row) => value },
@@ -71,9 +57,9 @@ const Heatmap_Card_Repo = (props) => {
     ];
 
     // Ensure each row has a unique `id` field for DataGrid
-    most_active_branches_rows.forEach((row, index) => (row.id = index + 1));
-    most_active_users_rows.forEach((row, index) => (row.id = index + 1));
-    most_frequently_changed_files_rows.forEach((row, index) => (row.id = index + 1));
+    most_active_branches_rows.forEach((row, index) => (row.id = index + 1, row.last_commit = convertToIST(row.last_commit)));
+    most_active_users_rows.forEach((row, index) => (row.id = index + 1, row.last_commit = convertToIST(row.last_commit)));
+    most_frequently_changed_files_rows.forEach((row, index) => (row.id = index + 1, row.last_commit = convertToIST(row.last_commit)));
 
     return (
         <div className="card">
@@ -123,6 +109,10 @@ const Heatmap_Card_Repo = (props) => {
                             <Typography variant="h7">Max number of changed files in a commit: {max_file_changed}</Typography>
                             <br />
                             <Typography variant="h7">Avg number of changed files in a commit: {avg_file_changed}</Typography>
+                            <br />
+                            <Typography variant="h7">Max number of changes in a file: {max_changes_in_file_in_commit}</Typography>
+                            <br />
+                            <Typography variant="h7">Avg number of changes in a file: {avg_changes_in_file_in_commit}</Typography>
                             <br />
                         </Grid>
                         <Grid item xs={6}>

@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 
 from employees.models import Employee
-from .models import Branch, Commit, Repository
+from .models import Branch, Commit, Repository, Changes
 from django.db.models import Count, Max, Avg
 
 # Create your views here.
@@ -33,10 +33,15 @@ def least_active_repos(request):
 
 @api_view(["GET"])
 def repo_data(request):
-    # year = request.year
     json_resp = {}
-    startDate = datetime(timezone.now().year, 1, 1)
-    endDate = datetime(timezone.now().year, 12, 31)
+    # startDate = datetime(timezone.now().year, 1, 1)
+    # endDate = datetime(timezone.now().year, 12, 31)
+    try:
+        year = int(request.GET.get('year'))
+    except:
+        year = timezone.now().year
+    startDate = datetime(year, 1, 1)
+    endDate = datetime(year, 12, 31)
 
     json_resp['heatmap_dates'] = {'startDate': startDate.strftime('%Y/%m/%d'),'endDate': endDate.strftime('%Y/%m/%d')}
     
@@ -68,6 +73,7 @@ def repo_data(request):
     max_changed_files_in_commit = {}
     avg_changed_files_in_commit = {}
     avg_changes_in_file_in_commit = {}
+    max_changes_in_file_in_commit = {}
 
     for repo in repositories:
         # Most active branches
@@ -141,11 +147,15 @@ def repo_data(request):
             num_files=Count('files')
         ).aggregate(avg_files=Avg('num_files'))['avg_files']
 
+        # Max number of changes in a file in a commit
+        max_changes_in_file_in_commit[repo.name] = Changes.objects.filter(commit__repository=repo).aggregate(
+            max_changes=Max('additions')+Max('deletions')
+        )['max_changes']
+
         # Avg number of changes in a file in a commit
-        # Assuming 'changes' field exists in the File model to represent changes made in a commit
-        # avg_changes_in_file_in_commit[repo.name] = Commit.objects.filter(repository=repo).annotate(
-        #     avg_changes=Avg('files__changes')
-        # ).aggregate(avg_changes=Avg('avg_changes'))['avg_changes']
+        avg_changes_in_file_in_commit[repo.name] = Changes.objects.filter(commit__repository=repo).aggregate(
+            avg_changes=Avg('additions')+Avg('deletions')
+        )['avg_changes']
 
 
     # Construct the response
@@ -164,7 +174,8 @@ def repo_data(request):
         'last_changed_file': last_changed_file,
         'max_changed_files_in_commit': max_changed_files_in_commit,
         'avg_changed_files_in_commit': avg_changed_files_in_commit,
-        # 'avg_changes_in_file_in_commit': avg_changes_in_file_in_commit
+        'max_changes_in_file_in_commit': max_changes_in_file_in_commit,
+        'avg_changes_in_file_in_commit': avg_changes_in_file_in_commit
     }
 
     # json_resp['heatmap_data'] = heatmap_data

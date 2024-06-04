@@ -16,6 +16,7 @@ from repositories.models import Commit, Repository, File, Branch, Changes
 from employees.models import Employee
 
 date = timezone.now()
+os.mkdir('../logs')
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger()
 logger.addHandler(logging.FileHandler(f'../logs/utils_{date}.log', 'a'))
